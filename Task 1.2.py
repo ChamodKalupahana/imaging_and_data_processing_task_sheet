@@ -1,21 +1,48 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from loading_and_plotting_data import load_grey_image
 
-orginal_image = plt.imread(r'C:\Users\chamo\Documents\Physics\Projects\Imaging and Data Processing\Images\Orginal image - gym.jpeg')
-r, g, b = orginal_image[:,:,0], orginal_image[:,:,1], orginal_image[:,:,2]
+def segment_image(plot_histrogram, image, threshold):
 
-greyscale_image = np.sqrt(r**2 + g**2 + b**2)
-greyscale_image = (greyscale_image / np.amax(greyscale_image)).astype(np.float64)
+    orginal_image, greyscale_image = load_grey_image(image=image)
 
-edit_greyscale_image = np.where(greyscale_image > 0.1, greyscale_image, 0)
+    N = 3
+    fig, ax = plt.subplots(1, N, figsize=(10, 6))
+    edit_greyscale_image = np.where(greyscale_image > threshold / 256, greyscale_image, 0)
+    edit_greyscale_image = np.where(greyscale_image < threshold / 256, edit_greyscale_image, 1)
 
-fig, ax = plt.subplots(2, figsize=(10, 6))
+    ax[0].imshow(orginal_image)
+    ax[0].set_xlabel('Orginal Image')
+    
+    ax[1].imshow(greyscale_image, cmap='gray')
+    ax[1].set_xlabel('Greyscale Image')
 
-hist, bin_edges = np.histogram(edit_greyscale_image, bins=256, range=(0, 1))
-ax[0].plot(bin_edges[0:-1], hist)
+    ax[2].imshow(edit_greyscale_image, cmap='gray')
+    ax[2].set_xlabel('Binary Image')
 
-ax[1].imshow(edit_greyscale_image, cmap='gray')
-ax[1].axes.get_xaxis().set_visible(False)
-ax[1].axes.get_yaxis().set_visible(False)
-plt.savefig('Images/greyscale_image.jpeg')
-plt.show()
+    for i in range(0, N):
+        ax[i].set_xticks([])
+        ax[i].axes.get_yaxis().set_visible(False)
+    
+    plt.savefig('Images/binary_image.jpeg')
+
+    if plot_histrogram == True:
+        fig_2, ax_2 = plt.subplots(2, figsize=(8, 7))
+
+        hist, bin_edges = np.histogram(greyscale_image * 256, bins=100, range=(0, 256))
+        ax_2[0].bar(bin_edges[0:-1], hist, align='edge', width=20)
+        ax_2[0].ticklabel_format(style='plain')
+        ax_2[0].set_xlabel('Orginal image')
+
+        hist, bin_edges = np.histogram(edit_greyscale_image * 256, bins=100, range=(0, 256))
+        ax_2[1].bar(bin_edges[0:-1], hist, align='edge', width=20)
+        ax_2[1].ticklabel_format(style='plain')
+        ax_2[1].set_xlabel('Thresholded Image')
+        
+        fig_2.suptitle('Histograms of greyscale pixel brightness')
+        fig_2.savefig('Images/histrogram_binary_image.jpeg')
+    plt.show()
+
+
+# for gym image, use threshold=60
+segment_image(plot_histrogram=True, image='gym', threshold=60)
