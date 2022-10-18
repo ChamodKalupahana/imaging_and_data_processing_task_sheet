@@ -44,4 +44,4 @@ def plot_org_vs_grey_image(plot_histrogram, image, alpha):
     plt.show()
 
 
-plot_org_vs_grey_image(plot_histrogram=True, image='ocean', alpha=20)
+plot_org_vs_grey_image(plot_histrogram=True, image='gym', alpha=10)
