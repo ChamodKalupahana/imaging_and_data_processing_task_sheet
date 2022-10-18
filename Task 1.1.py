@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from loading_and_plotting_data import load_grey_image
+from loading_data import load_grey_image
 
 def plot_org_vs_grey_image(plot_histrogram, image, alpha):
 

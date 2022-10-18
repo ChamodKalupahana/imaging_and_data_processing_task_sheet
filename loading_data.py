@@ -29,3 +29,18 @@ def load_grey_image(image):
     greyscale_image = (greyscale_image / np.amax(greyscale_image)).astype(np.float64)
 
     return orginal_image, greyscale_image
+
+
+def load_affine_data():
+    x_trans = np.loadtxt(r"Task sheet files-20221008\Affine\Affine\x_trans.mat", dtype=np.float64)
+    y_trans = np.loadtxt(r"Task sheet files-20221008\Affine\Affine\y_trans.mat", dtype=np.float64)
+    z_trans = np.loadtxt(r"Task sheet files-20221008\Affine\Affine\z_trans.mat", dtype=np.float64)
+    
+    room_corners = np.loadtxt(r"Task sheet files-20221008\Affine\Affine\room_corners.mat", dtype=np.float64)
+    head = np.loadtxt(r"Task sheet files-20221008\Affine\Affine\head.mat", dtype=np.float64)
+
+    alpha = np.loadtxt(r"Task sheet files-20221008\Affine\Affine\alpha.mat", dtype=np.float64)
+    phi = np.loadtxt(r"Task sheet files-20221008\Affine\Affine\phi.mat", dtype=np.float64)
+    theta = np.loadtxt(r"Task sheet files-20221008\Affine\Affine\theta.mat", dtype=np.float64)
+    
+    return x_trans, y_trans, z_trans, room_corners, head, alpha, phi, theta

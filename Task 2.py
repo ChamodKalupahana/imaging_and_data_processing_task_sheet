@@ -1,52 +1,75 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
+from loading_data import load_affine_data
 
-def load_data():
-    x_trans = np.loadtxt(r"Task sheet files-20221008\Affine\Affine\x_trans.mat", dtype=np.float64)
-    y_trans = np.loadtxt(r"Task sheet files-20221008\Affine\Affine\y_trans.mat", dtype=np.float64)
-    z_trans = np.loadtxt(r"Task sheet files-20221008\Affine\Affine\z_trans.mat", dtype=np.float64)
-    room_corners = np.loadtxt(r"Task sheet files-20221008\Affine\Affine\room_corners.mat", dtype=np.float64)
-
-    return x_trans, y_trans, z_trans, room_corners
-
-def plot_movement():
-    x_trans, y_trans, z_trans, room_corners = load_data()
-    t = np.arange(0, 7200, 1)
-
-    first_row = room_corners[:, 0]
-
-    fig, ax = plt.subplots(3, figsize=(10, 6))
-
-    ax[0].plot(t, x_trans)
-    ax[1].plot(t, y_trans)
-    ax[2].plot(t, z_trans)
+def plot_movement(show_trans_coors):
+    x_trans, y_trans, z_trans, room_corners, head, alpha, phi, theta = load_affine_data()
     
-    fig_2 = plt.figure()
-    ax_2 = plt.axes(projection='3d')
-    ax_2.plot3D(x_trans, y_trans, z_trans)
-    
+    if show_trans_coors == True:
+        t = np.arange(0, 7200, 1)
+
+        fig, ax = plt.subplots(3, figsize=(10, 6))
+
+        ax[0].plot(t, x_trans)
+        ax[1].plot(t, y_trans)
+        ax[2].plot(t, z_trans)
+        plt.savefig(r"Task 2 Images\x_data.jpeg", dpi=300)
+        plt.show()
+
     #ax_2.axes(projection='3d')
     #ax_2.plot3D(x_trans, y_trans, z_trans)
     #fig_2, ax_2 = plt.subplots(figsize=(10, 6))
 
-    plt.savefig(r"Task sheet files-20221008\Affine\Affine\x_data.jpeg", dpi=300)
+def plot_head(show_trans, show_head, show_room):
+    x_trans, y_trans, z_trans, room_corners, head, alpha, phi, theta = load_affine_data()
+    
+    room_x, room_y, room_z = room_corners[:, 0], room_corners[:, 1], room_corners[:, 2]
+    head_x, head_y, head_z = head[:, 0], head[:, 1], head[:, 2]
+
+    fig = plt.figure()
+    ax = plt.axes(projection='3d')
+
+    if show_trans == True:
+        ax.plot3D(x_trans, y_trans, z_trans, 'k*')
+    
+    if show_head == True:
+        ax.plot3D(head_x, head_y, head_z, 'b.')
+
+    if show_room == True:
+        ax.plot3D(room_x, room_y, room_z, 'k.')
+        
     plt.show()
 
-def plot_head():
-    chamod_head = plt.imread(r"Task 2 Images\Chamod head.jpeg")
+def show_animation(show_room):
+    x_trans, y_trans, z_trans, room_corners, head, alpha, phi, theta = load_affine_data()
+    
+    room_x, room_y, room_z = room_corners[:, 0], room_corners[:, 1], room_corners[:, 2]
+    head_x, head_y, head_z = head[:, 0], head[:, 1], head[:, 2]
 
-    fig = plt.figure(figsize=(10, 8))
-    ax = plt.axes()
-    ax.imshow(chamod_head)
-    ax.axes.get_xaxis().set_visible(False)
-    ax.axes.get_yaxis().set_visible(False)
-    plt.show()
+    fig = plt.figure()
+    ax = plt.axes(projection='3d')
+    
+    ax.plot3D(head_x, head_y, head_z, 'b.')
+    
+    if show_room == True:
+        ax.plot3D(room_x, room_y, room_z, 'k.')
+    
 
-    position = ax.get_position()
-    ax.set_position()
+    plt.pause(1)
+    N = np.size(x_trans)
+    
+    for i in range(N):
+        head_x = head_x + x_trans[i]
+        head_y = head_y + y_trans[i]
+        head_z = head_z + z_trans[i]
+    
+        ax.plot3D(head_x, head_y, head_z, 'b.')
+        plt.pause(0.001)
+        
 
-#plot_head()
-plot_movement()
+#plot_movement(show_trans_coors=True)
+#plot_head(show_trans=False, show_head=True, show_room=True)
+show_animation(show_room=True)
 
 print('Hello world')
