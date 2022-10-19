@@ -41,7 +41,7 @@ def plot_head(show_trans, show_head, show_room):
         
     plt.show()
 
-def show_animation(show_room):
+def show_animation(show_room, start_frame):
     x_trans, y_trans, z_trans, room_corners, head, alpha, phi, theta = load_affine_data()
     
     room_x, room_y, room_z = room_corners[:, 0], room_corners[:, 1], room_corners[:, 2]
@@ -51,25 +51,29 @@ def show_animation(show_room):
     ax = plt.axes(projection='3d')
     
     ax.plot3D(head_x, head_y, head_z, 'b.')
-    
-    if show_room == True:
-        ax.plot3D(room_x, room_y, room_z, 'k.')
-    
 
     plt.pause(1)
     N = np.size(x_trans)
     
-    for i in range(N):
-        head_x = head_x + x_trans[i]
-        head_y = head_y + y_trans[i]
-        head_z = head_z + z_trans[i]
+    for i in range(start_frame ,N):
+        new_head_x = head_x + x_trans[i]
+        new_head_y = head_y + y_trans[i]
+        new_head_z = head_z + z_trans[i]
     
-        ax.plot3D(head_x, head_y, head_z, 'b.')
+        if show_room == True:
+            ax.plot3D(room_x, room_y, room_z, 'k.')
+
+        ax.plot3D(new_head_x, new_head_y, new_head_z, 'b.')
+        #ax.plot3D(x_trans[i], y_trans[i], z_trans[i], 'b.')
         plt.pause(0.001)
+        
+        new_head_x, new_head_y, new_head_z = head_x, head_y, head_z
+        print('Loop', i)
+        ax.clear()
         
 
 #plot_movement(show_trans_coors=True)
 #plot_head(show_trans=False, show_head=True, show_room=True)
-show_animation(show_room=True)
+show_animation(show_room=True, start_frame=5000)
 
 print('Hello world')
