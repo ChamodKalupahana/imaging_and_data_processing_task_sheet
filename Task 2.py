@@ -89,7 +89,6 @@ def show_animation(show_room, small_room, start_frame):
 
     for i in range(start_frame ,N):
         new_head_x, new_head_y, new_head_z = rotation_matrix(theta, phi, alpha ,new_head_x, new_head_y, new_head_z, centre_of_mass, i)
-    
         new_head_x, new_head_y, new_head_z = translation_matrix(head_x, head_y, head_z,x_trans, y_trans, z_trans, i)
         
         if show_room == True:
@@ -109,6 +108,6 @@ def show_animation(show_room, small_room, start_frame):
 
 #plot_movement(show_trans_coors=True)
 #plot_head(show_trans=False, show_head=True, show_room=True)
-show_animation(show_room=True, small_room=True, start_frame=5000)
+show_animation(show_room=True, small_room=True, start_frame=700)
 
 print('Fin')
