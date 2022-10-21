@@ -1,54 +1,150 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.fft import fft, ifft
 import scipy.signal as sci
 
 def freq_filter():
+    """ Applies fourier transfrom to signal.mat and separates the frequencies using a guassian filter
+    """
+
+    #------------------------------------------------------------------------
+    #--------------------- Fourier Transform ---------------------
+    #------------------------------------------------------------------------
+
+    # extract data from signal.mat
     signal = np.loadtxt(r"Task sheet files-20221008\Fourier_Filtering\Fourier_Filtering\signal.mat")
-    t = np.arange(0, 48000)
 
-    fft_signal = np.fft.fft(signal)
-    freq = np.arange(0, 48000)
+    # plot the signal against 40s of time 
+    t = np.linspace(0, 40, 48000)
+    
+    # create a subplot for rest of the plots
+    fig, ax = plt.subplots(3, 2, figsize=(15, 8))
+    ax[0, 0].plot(t, signal, 'b-')
 
-    fig, ax = plt.subplots(5, figsize=(15, 8))
+    # take the fourier transfrom of the signal
+    fft_signal = np.abs(np.fft.fft(signal))
+    
+    # plot the fouier transfrom against 50hz of frequency
+    freq = np.linspace(0, 50, 48000)
+    ax[0, 1].plot(freq, fft_signal, 'r-')
 
-    ax[0].plot(t, signal, 'b-')
-    ax[1].plot(freq, fft_signal, 'r-')
+    #------------------------------------------------------------------------
+    #--------------------- Frequency Filter ---------------------
+    #------------------------------------------------------------------------
 
-    ax[0].set_xlabel('Time')
-    ax[0].set_ylabel('Signal')
-
-    ax[1].set_xlabel('Frequency')
-    ax[1].set_ylabel('Power strectrum')
-
+    # create a guassian function
     x = t
     mu_1 = 6
-    mu_2 = 49000
-    sig = 1000 # sigma regluates the half width full maximum nik says <3 <3
+    mu_2 = 10
+    sig = 0.4 # sigma regluates the half width full maximum nik says <3 <3
+    guassian = np.exp(-np.power(x - mu_1, 2.) / (2 * np.power(sig, 2.)))
     #guassian = np.exp(-np.power(x - mu_1, 2.) / (2 * np.power(sig, 2.))) + np.exp(-np.power(x - mu_2, 2.) / (2 * np.power(sig, 2.)))
-    guassian = np.exp(-np.power(x - mu_1, 2.) / (2 * np.power(sig, 2.))) + np.exp(-np.power(x - mu_2, 2.) / (2 * np.power(sig, 2.)))
 
-    ax[2].plot(freq, guassian, 'g-')
+    ax[1, 0].plot(freq, guassian, 'g-') # could plot the gusssian function onto the fliter signal
+
+    # apply the frequency filter to the fourier transfromed signal
+    filtered_signal = guassian * fft_signal
+
+    ax[1, 1].plot(freq, filtered_signal, 'r-')
+
+
+    #------------------------------------------------------------------------
+    #--------------------- Inverse Frequency Filter ---------------------
+    #------------------------------------------------------------------------
     
-    ax[2].set_xlabel('Frequency')
-    ax[2].set_ylabel('Power strectrum')
+    #inverse_filtered_signal = np.fft.ifft(filtered_signal)
+    inverse_filtered_signal = np.fft.ifft(fft_signal)
+    t_inverse = t = np.linspace(0, 40, 48000)
+    
+    ax[2, 0].plot(t_inverse, inverse_filtered_signal, 'r-')
+
+
+    #------------------------------------------------------------------------
+    #--------------------- Hilbert Method ---------------------
+    #------------------------------------------------------------------------
+    abs_analytic_sginal = sci.hilbert(np.abs(inverse_filtered_signal))
+    
+    ax[2, 1].plot(t, abs_analytic_sginal, 'b-')
+    
+    # plotting infomation
+    ax[0, 0].set_xlabel('Time')
+    ax[0, 0].set_ylabel('Signal')
+    ax[0, 0].set_title('Unprocessed Signal')
+    ax[0, 1].set_xlabel('Frequency')
+    ax[0, 1].set_ylabel('Power strectrum')
+    ax[0, 1].set_title('Fourier Transform')
+    ax[1, 0].set_xlabel('Frequency')
+    ax[1, 0].set_ylabel('Power strectrum')
+    ax[1, 0].set_title('Guassian Filter')
+    ax[1, 1].set_xlabel('Frequency')
+    ax[1, 1].set_ylabel('Power strectrum')
+    ax[1, 1].set_title('Filtered Signal')
+    ax[2, 0].set_xlabel('Time')
+    ax[2, 0].set_ylabel('Signal')
+    ax[2, 0].set_title('Inverse Filtered Signal')
+    ax[2, 1].set_title('Analytic Signal')
+    fig.subplots_adjust(hspace=0.6)
+    plt.savefig(r"Task 3 Images\filtered_signal.jpeg")
+    plt.show()
+
+def freq_filter_10_sec():
+    signal = np.loadtxt(r"Task sheet files-20221008\Fourier_Filtering\Fourier_Filtering\signal.mat")
+    signal = signal[0:12000]
+    t = np.linspace(0, 10, 12000)
+
+    #fft_signal = np.abs(np.fft.fft(signal))
+    fft_signal = np.abs(fft(signal))
+    freq = np.linspace(0, 50, 12000)
+
+    fig, ax = plt.subplots(3, 2, figsize=(15, 8))
+
+    ax[0, 0].plot(t, signal, 'b-')
+    ax[0, 1].plot(freq, fft_signal, 'r-')
+
+    ax[0, 0].set_xlabel('Time')
+    ax[0, 0].set_ylabel('Signal')
+
+    ax[0, 1].set_xlabel('Frequency')
+    ax[0, 1].set_ylabel('Power strectrum')
+
+    x = freq
+    mu_1 = 6
+    mu_2 = 10
+    sig = 2 # sigma regluates the half width full maximum nik says <3 <3
+    #guassian = np.exp(-np.power(x - mu_1, 2.) / (2 * np.power(sig, 2.))) + np.exp(-np.power(x - mu_2, 2.) / (2 * np.power(sig, 2.)))
+    #guassian = np.exp(-np.power(x - mu_1, 2.) / (2 * np.power(sig, 2.))) + np.exp(-np.power(x - mu_2, 2.) / (2 * np.power(sig, 2.)))
+    guassian = np.exp(-np.power(x - mu_1, 2.) / (2 * np.power(sig, 2.)))
+
+    ax[1, 0].plot(freq, guassian, 'g-')
+    
+    ax[1, 0].set_xlabel('Frequency')
+    ax[1, 0].set_ylabel('Power strectrum')
 
     filtered_signal = guassian * fft_signal
 
-    ax[3].plot(freq, filtered_signal, 'r-')
+    ax[1, 1].plot(freq, filtered_signal, 'r-')
     
-    ax[3].set_xlabel('Frequency')
-    ax[3].set_ylabel('Power strectrum')
+    ax[1, 1].set_xlabel('Frequency')
+    ax[1, 1].set_ylabel('Power strectrum')
 
-    inverse_filtered_signal = np.fft.ifft(filtered_signal)
-
-    ax[4].plot(t, inverse_filtered_signal, 'r-')
+    #inverse_filtered_signal = np.fft.fft(filtered_signal)
+    #inverse_filtered_signal = ifft(filtered_signal)
+    inverse_filtered_signal = ifft(fft_signal)
+    t_inverse = t = np.linspace(0, 10, 12000)
     
-    ax[4].set_xlabel('Time')
-    ax[4].set_ylabel('Signal')
+    ax[2, 0].plot(t_inverse, inverse_filtered_signal, 'r-')
+    
+    ax[2, 0].set_xlabel('Time')
+    ax[2, 0].set_ylabel('Signal')
 
+    abs_analytic_sginal = sci.hilbert(np.abs(inverse_filtered_signal))
+    
+    ax[2, 1].plot(t, abs_analytic_sginal, 'b-')
+
+    plt.savefig(r"Task 3 Images\filtered_signal.jpeg")
     plt.show()
 
-
+# my fourier transform  is not correct becasue the inverse fourier transfrom doesn't show the orginal signal
 def hilbert_signal():
     signal = np.loadtxt(r"Task sheet files-20221008\Fourier_Filtering\Fourier_Filtering\signal.mat")
     
@@ -70,5 +166,6 @@ def hilbert_signal():
     pass
 
 
-#freq_filter()
-hilbert_signal()
+freq_filter()
+#freq_filter_10_sec()
+#hilbert_signal()
