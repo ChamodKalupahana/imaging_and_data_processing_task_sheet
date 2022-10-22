@@ -27,26 +27,31 @@ def freq_filter():
     ax[0, 0].plot(t, signal, 'b-')
 
     # take the fourier transfrom of the signal
-    fft_signal = np.abs(np.fft.fft(signal))
+    fft_signal = np.fft.fft(signal)
     
     # plot the fouier transfrom against 50hz of frequency
-    freq = np.linspace(0, 50, n)
-    ax[0, 1].plot(freq, fft_signal, 'r-')
+    #freq = np.linspace(0, 50, n)
+    sample_rate = 600
+    sample_interval = 1 / sample_rate
+    freq = np.fft.fftfreq(np.size(fft_signal), sample_interval)
+    ax[0, 1].plot(freq, np.abs(fft_signal), 'r-')
 
     #------------------------------------------------------------------------
     #--------------------- Frequency Filter ---------------------
     #------------------------------------------------------------------------
 
     # create a guassian function
-    x = t
-    mu_1 = 6
+    x = freq
+    #mu_1 = 5 for 0-10s
+    mu_1 = 10
     mu_2 = 10
-    sig = 0.4 # sigma regluates the half width full maximum nik says <3 <3
+    sig = 0.3 # sigma regluates the half width full maximum nik says <3 <3
     guassian = np.exp(-np.power(x - mu_1, 2.) / (2 * np.power(sig, 2.)))
     #guassian = np.exp(-np.power(x - mu_1, 2.) / (2 * np.power(sig, 2.))) + np.exp(-np.power(x - mu_2, 2.) / (2 * np.power(sig, 2.)))
 
     # plot the guassian onto a subplot (could plot the gusssian function onto the fliter signal)
     ax[1, 0].plot(freq, guassian, 'g-')
+    #ax[1, 0].set_xlim([mu_1 - sig, mu_1 + sig])
 
     # apply the frequency filter to the fourier transfromed signal
     filtered_signal = guassian * fft_signal
@@ -57,11 +62,10 @@ def freq_filter():
     #--------------------- Inverse Frequency Filter ---------------------
     #------------------------------------------------------------------------
     
-    #inverse_filtered_signal = np.fft.ifft(filtered_signal)
-    inverse_filtered_signal = np.fft.ifft(fft_signal)
-    t_inverse = t = np.linspace(0, 40, n)
+    inverse_filtered_signal = np.fft.ifft(filtered_signal)
+    #inverse_filtered_signal = np.fft.ifft(fft_signal)
     
-    ax[2, 0].plot(t_inverse, inverse_filtered_signal, 'r-')
+    ax[2, 0].plot(t, inverse_filtered_signal, 'r-')
 
     #------------------------------------------------------------------------
     #--------------------- Hilbert Method ---------------------
@@ -130,19 +134,57 @@ def test_fft():
     k = np.arange(n)
     T = n / sample_rate
     frq = k / T
-    freq = frq[int(n/2):n]
+    #freq = frq[int(n/2):n]
+    #freq = frq
+    freq = np.fft.fftfreq(n, sample_interval)
 
-    fft_signal = np.imag(np.fft.fft(signal)) / n
+    fft_signal = np.fft.fft(signal) / n
     #freq = np.linspace(0, 1, np.size(fft_signal))
     #freq = np.linspace(0, 1, )
 
     plt.figure()
-    plt.plot(freq, fft_signal[int(n/2):n])
+    #plt.plot(freq, fft_signal[int(n/2):n])
+    plt.plot(freq, fft_signal)
     plt.show()
 
     pass
 
-#freq_filter()
-test_fft()
+def example_code():
+    #fs is sampling frequency
+    fs = 100.0
+    time = np.linspace(0,10,int(10*fs),endpoint=False)
+
+    #wave is the sum of sine wave(1Hz) and cosine wave(10 Hz)
+    wave = np.sin(np.pi*time)+ np.cos(np.pi*time)
+    #wave = np.exp(2j * np.pi * time )
+
+    # Compute the one-dimensional discrete Fourier Transform.
+
+    fft_wave = np.fft.fft(wave)
+
+    # Compute the Discrete Fourier Transform sample frequencies.
+
+    fft_fre = np.fft.fftfreq(n=wave.size, d=1/fs)
+
+    plt.subplot(211)
+    plt.plot(fft_fre, fft_wave.real, label="Real part")
+    plt.xlim(-50,50)
+    plt.ylim(-600,600)
+    plt.legend(loc=1)
+    plt.title("FFT in Frequency Domain")
+
+    plt.subplot(212)
+    plt.plot(fft_fre, fft_wave.imag,label="Imaginary part")
+    plt.legend(loc=1)
+    plt.xlim(-50,50)
+    plt.ylim(-600,600)
+    plt.xlabel("frequency (Hz)")
+
+    plt.show()
+    pass
+
+freq_filter()
+#test_fft()
+#example_code()
 #freq_filter_10_sec()
 #hilbert_signal()
