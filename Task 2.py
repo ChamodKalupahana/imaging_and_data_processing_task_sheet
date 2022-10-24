@@ -12,7 +12,7 @@ def plot_head(show_trans, show_head, show_room):
         show_room (Boolan): Shows the room corner points on the 3D figure
     """
     
-    # extracts downloaded data into sep
+    # extracts downloaded data into separate variables
     x_trans, y_trans, z_trans, room_corners, head, alpha, phi, theta = load_affine_data()
     
     room_x, room_y, room_z = room_corners[:, 0], room_corners[:, 1], room_corners[:, 2]

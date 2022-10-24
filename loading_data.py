@@ -2,6 +2,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def load_grey_image(image):
+    """ read the string input and assigns the image and then divide into rgb values
+
+    Args:
+        image (_type_): _description_
+
+    Returns:
+        orginal_image
+        greyscale_image
+    """
     # read the image and divude the image into rgb values
     if image == 'gym':
         orginal_image = plt.imread(r'Images\Orginal image - gym.jpeg')

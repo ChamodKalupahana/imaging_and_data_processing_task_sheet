@@ -31,7 +31,7 @@ def freq_filter():
     
     # plot the fouier transfrom against 50hz of frequency
     #freq = np.linspace(0, 50, n)
-    sample_rate = 600
+    sample_rate = 1200
     sample_interval = 1 / sample_rate
     freq = np.fft.fftfreq(np.size(fft_signal), sample_interval)
     ax[0, 1].plot(freq, np.abs(fft_signal), 'r-')
@@ -43,20 +43,21 @@ def freq_filter():
     # create a guassian function
     x = freq
     #mu_1 = 5 for 0-10s
-    mu_1 = 10
+    mu_1 = 6
     mu_2 = 10
-    sig = 0.3 # sigma regluates the half width full maximum nik says <3 <3
+    sig = 0.5 # sigma regluates the half width full maximum nik says <3 <3
     guassian = np.exp(-np.power(x - mu_1, 2.) / (2 * np.power(sig, 2.)))
     #guassian = np.exp(-np.power(x - mu_1, 2.) / (2 * np.power(sig, 2.))) + np.exp(-np.power(x - mu_2, 2.) / (2 * np.power(sig, 2.)))
 
     # plot the guassian onto a subplot (could plot the gusssian function onto the fliter signal)
     ax[1, 0].plot(freq, guassian, 'g-')
     #ax[1, 0].set_xlim([mu_1 - sig, mu_1 + sig])
+    #ax[1, 0].set_xlim([4 , 8])
 
     # apply the frequency filter to the fourier transfromed signal
     filtered_signal = guassian * fft_signal
 
-    ax[1, 1].plot(freq, filtered_signal, 'r-')
+    ax[1, 1].plot(freq, np.abs(filtered_signal), 'r-')
 
     #------------------------------------------------------------------------
     #--------------------- Inverse Frequency Filter ---------------------
@@ -73,7 +74,7 @@ def freq_filter():
 
     abs_analytic_sginal = sci.hilbert(np.abs(inverse_filtered_signal))
     
-    ax[2, 1].plot(t, abs_analytic_sginal, 'b-')
+    ax[2, 1].plot(t, np.abs(abs_analytic_sginal), 'b-')
     
     # plotting infomation (could simplify)
     ax[0, 0].set_xlabel('Time')
