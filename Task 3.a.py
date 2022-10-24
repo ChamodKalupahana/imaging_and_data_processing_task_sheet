@@ -4,9 +4,61 @@ from scipy.fft import fft, ifft
 import scipy.signal as sci
 
 def freq_filter():
+    """    
+    # tried using np.linspace for this part but np.fft.fftfreq is correct here
+    # freq = np.linspace(0, 50, n)
+    # sigma regluates the half width full maximum nik says <3 <3
+
+    """
+    #------------------------------------------------------------------------
+    #--------------------- Fourier Transform ---------------------
+    #------------------------------------------------------------------------
+
+    # extract data from signal.mat
+    signal = np.loadtxt(r"Task sheet files-20221008\Fourier_Filtering\Fourier_Filtering\signal.mat")
+    
+    # number of data points
+    n = np.size(signal)
+
+    # plot the signal against 40s of time 
+    t = np.linspace(0, 40, n)
+    
+    # take the fourier transfrom of the signal
+    sample_rate = 1200
+    sample_interval = 1 / sample_rate
+
+    fft_signal = np.fft.fft(signal)
+    freq = np.fft.fftfreq(np.size(fft_signal), sample_interval)
+    
+    #------------------------------------------------------------------------
+    #--------------------- Frequency Filter ---------------------
+    #------------------------------------------------------------------------
+
+    # create a guassian function
+    mu_1, sig = 6, 0.5
+    guassian = np.exp(-np.power(freq - mu_1, 2.) / (2 * np.power(sig, 2.)))
+
+    filtered_signal = guassian * fft_signal
+
+    #------------------------------------------------------------------------
+    #--------------------- Inverse Fourier Transform ---------------------
+    #------------------------------------------------------------------------
+    
+    inverse_filtered_signal = np.fft.ifft(filtered_signal)
+    
+    #------------------------------------------------------------------------
+    #--------------------- Hilbert Method ---------------------
+    #------------------------------------------------------------------------
+
+    abs_analytic_sginal = sci.hilbert(np.abs(inverse_filtered_signal))
+    
+    return t, signal, freq, 
+
+def plot_freq_filter():
     """ 
     Applies fourier transfrom to signal.mat and separates the frequencies using a guassian filter
     # IMPORTANT # my fourier transform  is not correct becasue the inverse fourier transfrom doesn't show the orginal signal
+    # Fixed this error # had to use np.fft.fftfreq rather than create my own frequency array
     """
 
     #------------------------------------------------------------------------
@@ -30,7 +82,10 @@ def freq_filter():
     fft_signal = np.fft.fft(signal)
     
     # plot the fouier transfrom against 50hz of frequency
-    #freq = np.linspace(0, 50, n)
+    
+    # tried using np.linspace for this part but np.fft.fftfreq is correct here
+    # freq = np.linspace(0, 50, n)
+
     sample_rate = 1200
     sample_interval = 1 / sample_rate
     freq = np.fft.fftfreq(np.size(fft_signal), sample_interval)
@@ -60,7 +115,7 @@ def freq_filter():
     ax[1, 1].plot(freq, np.abs(filtered_signal), 'r-')
 
     #------------------------------------------------------------------------
-    #--------------------- Inverse Frequency Filter ---------------------
+    #--------------------- Inverse Fourier Transform ---------------------
     #------------------------------------------------------------------------
     
     inverse_filtered_signal = np.fft.ifft(filtered_signal)
@@ -98,20 +153,18 @@ def freq_filter():
     plt.show()
 
 def hilbert_signal():
+    # extract data from signal.mat
     signal = np.loadtxt(r"Task sheet files-20221008\Fourier_Filtering\Fourier_Filtering\signal.mat")
     
-    imag_analytic_sginal = np.imag(sci.hilbert(signal))
-    real_analytic_sginal = np.real(sci.hilbert(signal))
-    abs_analytic_sginal = np.abs(sci.hilbert(signal))
-    t = np.arange(0, 48000)
-    
-    fig, ax = plt.subplots(4, figsize=(15, 8))
-    
-    ax[0].plot(t, signal, 'b-')
+    # number of data points
+    n = np.size(signal)
 
-    ax[1].plot(t, imag_analytic_sginal, 'r-')
-    ax[2].plot(t, real_analytic_sginal, 'g-')
-    ax[3].plot(t, abs_analytic_sginal, 'k-')
+    # plot the signal against 40s of time 
+    t = np.linspace(0, 40, n)
+    
+    # create a subplot for rest of the plots
+    fig, ax = plt.subplots(3, 2, figsize=(15, 8))
+    ax[0, 0].plot(t, signal, 'b-')
 
     plt.show()
 
@@ -184,7 +237,8 @@ def example_code():
     plt.show()
     pass
 
-freq_filter()
+#freq_filter()
+plot_freq_filter()
 #test_fft()
 #example_code()
 #freq_filter_10_sec()
