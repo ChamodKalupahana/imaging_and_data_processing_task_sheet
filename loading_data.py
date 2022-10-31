@@ -17,12 +17,21 @@ def load_grey_image(image):
 
     if image == 'goosefair':
         orginal_image = plt.imread(r'Images\Orginal image - goosefair.jpeg')
+    
+    if image == 'goosefair bright':
+        orginal_image = plt.imread(r'Images\Orginal image - goosefair bright.jpeg')
+
+    if image == 'goosefair day':
+        orginal_image = plt.imread(r'Images\Orginal image - goosefair day.jpeg')
 
     if image == 'ghost':
         orginal_image = plt.imread(r'Images\Orginal image - ghost.jpeg')
 
     if image == 'ocean':
         orginal_image = plt.imread(r'Images\Orginal image - ocean.jpeg')
+
+    if image == 'lake':
+        orginal_image = plt.imread(r'Images\Orginal image - lakejpeg.jpeg')
 
     if image == 'orginal':
         orginal_image = plt.imread(r'Images\Orginal image.jpeg')

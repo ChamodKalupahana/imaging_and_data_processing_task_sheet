@@ -39,9 +39,10 @@ def plot_org_vs_grey_image(plot_histrogram, image, alpha):
         ax_2[1].ticklabel_format(style='plain')
         ax_2[0].set_xlabel('Brighted image')
 
+
         fig_2.suptitle('Histograms of greyscale pixel brightness')
         fig_2.savefig('Images/histrogram_image.jpeg')
     plt.show()
 
 
-plot_org_vs_grey_image(plot_histrogram=True, image='gym', alpha=10)
+plot_org_vs_grey_image(plot_histrogram=True, image='orginal', alpha=10)

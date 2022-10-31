@@ -61,6 +61,7 @@ def bad_pixel_interpolation(show_bad_pixels):
 
     # use np.copy to copy a new array
     # np.mask to get rid of cosmic rays
+    # use np.isnan to match array with nans
     """
     # load mask and mask array
     mask = np.loadtxt(r"Task sheet files-20221008\IRcombination\Near_IR_images\badpixel.mask", dtype=int) - 1
