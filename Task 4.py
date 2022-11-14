@@ -96,7 +96,7 @@ def interpolate(image, mask):
     return interpolated_surround_image
 
 
-def bad_pixel_interpolation(image_path, remove_cosmis_rays):
+def bad_pixel_interpolation(image_path, remove_cosmis_rays, save_image, show_image):
     """
     Task b)
 
@@ -106,6 +106,8 @@ def bad_pixel_interpolation(image_path, remove_cosmis_rays):
     Args:
         image_path (str): image_path to interpolate
         remove_cosmis_rays (boolan): Set cosmic ray pixels to nan and add their coords to mask to be interpolated
+        save_image (boolan): Save image in Task 4 Images
+        show_image (boolan): Show interpolated image
 
     Returns:
         array: 2D interpolated image with bad pixel removed
@@ -118,13 +120,14 @@ def bad_pixel_interpolation(image_path, remove_cosmis_rays):
     # num. of bad pixels
     n = np.shape(mask)[0]
     
-        
     # set all bad pixels in image to np.nan
     image[mask[:,1], mask[:, 0]] = np.nan
 
     if remove_cosmis_rays == True:
-        # cosmic ray pixels are typically greater than 10000
-        cosmic_ray_coords = np.where(image > 10000)
+        # cosmic ray pixels are typically greater than 10000 for 1st image
+        # cosmic ray pixels have 6000 brightess for 25th image
+        # cosmic ray pixels have 5130 brightess for 3rd image
+        cosmic_ray_coords = np.where(image > 5130)
         
         # make sure returned cosmic_ray_coords in same shape as mask
         image[cosmic_ray_coords[0], cosmic_ray_coords[1]] = np.nan
@@ -137,24 +140,54 @@ def bad_pixel_interpolation(image_path, remove_cosmis_rays):
         mask = np.reshape(np.append(mask, cosmic_ray_coords), (num_of_mask[0] + num_of_cosmic_rays[0], 2))
 
     image = interpolate(image, mask)
-
-    plt.imshow(image)
-    plt.savefig(r"Task 4 Images/bad_pixel_image.jpeg")
-    plt.show()
+    
+    print(image_path[-12:-1],  'done')
+    
+    if show_image == True:
+        plt.imshow(image)
+        plt.title('Interpolated IR Image')
+        plt.xticks([])
+        plt.yticks([])
+        plt.show()
+        if save_image == True:
+            plt.savefig(r"Task 4 Images/bad_pixel_image.jpeg")
 
     return image
 
-def sky_subtraction():
-    image_path = r"Task sheet files-20221008\IRcombination\Near_IR_images\image01.fits"
-    bad_pixel_interpolation(image_path=image_path)
+def sky_subtraction(show_plot):
+
+    image_path = glob.glob(r"Task sheet files-20221008\IRcombination\Near_IR_images\image*")
+    total_image = np.zeros([25])
+    
+    # position of bottom left object in iamge01.fits is (8, 64)
+    # position of bottom left object in iamge02.fits is (1, 64)
+
+    # position of middle object in iamge01.fits is (63, 47) from inspection
+    # position of middle object in iamge02.fits is (56, 46)
+    # position of middle object in iamge03.fits is (50, 46)
+    # position of middle object in iamge04.fits is (43, 46)
+    # position of middle object in iamge05.fits is (37, 46)
+    # and so...
+
+    for i in range(0, np.size(image_path)):
+        temp_image_path = image_path[i]
+        temp_image = bad_pixel_interpolation(image_path=temp_image_path, remove_cosmis_rays=True, save_image=False, show_image=False)
+        total_image[i] = np.mean(temp_image)
+
+    if show_plot == True:
+        plt.plot(np.arange(0, np.size(image_path)), total_image)
+        plt.show()
     return
 
 
-image_path = r"Task sheet files-20221008\IRcombination\Near_IR_images\image01.fits"
+# image format is e.g image01, image25
+image_path = r"Task sheet files-20221008\IRcombination\Near_IR_images\image05.fits"
 
 #test_astropy()
 #display_image()
-image = bad_pixel_interpolation(image_path=image_path, remove_cosmis_rays=True)
+bad_pixel_interpolation(image_path=image_path, remove_cosmis_rays=True, save_image=False, show_image=True)
+
+#sky_subtraction(show_plot=True)
 
 
 
