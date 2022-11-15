@@ -24,13 +24,13 @@ def test_astropy():
     #import astropy._erfa as efra
     pass
 
-def display_image():
+def display_image(image_path):
     """ Task a) Acquire images
     """
     # don't use fits.ope
     #image = fits.open(r"Task sheet files-20221008\IRcombination\Near_IR_images\image01.fits")
 
-    image = fits.getdata(r"Task sheet files-20221008\IRcombination\Near_IR_images\image01.fits")
+    image = fits.getdata(image_path)
     
     # plt.imshow() uses the astropy_mpl_style to show the image
     plt.title('Unprocessed IR Image')
@@ -87,6 +87,7 @@ def interpolate(image, mask):
         [surround_image[row][column - 1], surround_image[row][column], surround_image[row][column + 1]],
         [surround_image[row + 1][column - 1], surround_image[row + 1][column], surround_image[row + 1][column + 1]]])
 
+        # use median for unbiased data
         kernel_mean = np.nanmean(kernel)
 
         surround_image[row, column] = kernel_mean
@@ -96,7 +97,7 @@ def interpolate(image, mask):
     return interpolated_surround_image
 
 
-def bad_pixel_interpolation(image_path, remove_cosmis_rays, save_image, show_image):
+def bad_pixel_interpolation(image_path, remove_cosmis_rays, threshold, save_image, show_image):
     """
     Task b)
 
@@ -127,7 +128,8 @@ def bad_pixel_interpolation(image_path, remove_cosmis_rays, save_image, show_ima
         # cosmic ray pixels are typically greater than 10000 for 1st image
         # cosmic ray pixels have 6000 brightess for 25th image
         # cosmic ray pixels have 5130 brightess for 3rd image
-        cosmic_ray_coords = np.where(image > 5130)
+        #cosmic_ray_coords = np.where(image > 5130) # can't use this because end images have brightness of around 5000
+        cosmic_ray_coords = np.where(image > threshold)
         
         # make sure returned cosmic_ray_coords in same shape as mask
         image[cosmic_ray_coords[0], cosmic_ray_coords[1]] = np.nan
@@ -154,40 +156,85 @@ def bad_pixel_interpolation(image_path, remove_cosmis_rays, save_image, show_ima
 
     return image
 
-def sky_subtraction(show_plot):
+def sky_subtraction(show_brightness_plot, median_subtraction, inspection_subtraction, show_single_image, image_index):
+    """The brightness of the sky increases as the images index increases
+
+    Args:
+        show_plot (boolan): _description_
+    """
 
     image_path = glob.glob(r"Task sheet files-20221008\IRcombination\Near_IR_images\image*")
-    total_image = np.zeros([25])
     
-    # position of bottom left object in iamge01.fits is (8, 64)
-    # position of bottom left object in iamge02.fits is (1, 64)
+    # num of images
+    N = np.size(image_path) 
 
-    # position of middle object in iamge01.fits is (63, 47) from inspection
-    # position of middle object in iamge02.fits is (56, 46)
-    # position of middle object in iamge03.fits is (50, 46)
-    # position of middle object in iamge04.fits is (43, 46)
-    # position of middle object in iamge05.fits is (37, 46)
+    total_image = np.zeros([100, 100, N])
+    total_subtracted_image = np.zeros([100, 100, N])
+    
+    # position of bottom left object in iamge01.fits is [8, 64]
+    # position of bottom left object in iamge02.fits is [1, 64]
+
+    # position of middle object in iamge01.fits is [63, 47] from inspection
+    # position of middle object in iamge02.fits is [56, 46]
+    # position of middle object in iamge03.fits is [50, 46]
+    # position of middle object in iamge04.fits is [43, 46]
+    # position of middle object in iamge05.fits is [37, 46]
     # and so...
 
-    for i in range(0, np.size(image_path)):
-        temp_image_path = image_path[i]
-        temp_image = bad_pixel_interpolation(image_path=temp_image_path, remove_cosmis_rays=True, save_image=False, show_image=False)
-        total_image[i] = np.mean(temp_image)
+    total_image_median = np.array([])
 
-    if show_plot == True:
-        plt.plot(np.arange(0, np.size(image_path)), total_image)
+    for i in range(0, N):
+        temp_image_path = image_path[i]
+        temp_image = bad_pixel_interpolation(image_path=temp_image_path, remove_cosmis_rays=True, threshold=8000, save_image=False, show_image=False)
+        total_image[:,:,i] = temp_image
+        if median_subtraction == True:
+            total_image_median = np.append(total_image_median, np.nanmedian(total_image[:, :, i]))
+            total_subtracted_image[:,:,i] = total_image[:,:, i] - total_image_median[i]
+
+    if show_brightness_plot == True:
+        if inspection_subtraction == True:
+            object_position = np.array([50, 46])
+            object_brightness = total_image[object_position[0], object_position[1]]
+            plt.plot(np.arange(0, N, 1), object_brightness, 'b-')
+        if median_subtraction == True:
+            plt.plot(np.arange(1, N + 1), total_image_median, 'b-')
+            plt.savefig(r"Task 4 Images/background sky brightness.jpeg")
+            #plt.xticks(np.arange(1, N + 1, 1))
         plt.show()
+    
+
+    if show_single_image == True:
+        image_index = int(image_index - 1) # array 0 for image 1
+
+        image = total_image[:,:,image_index]
+        subtracted_image = np.abs(image - total_image_median[image_index])
+        subtracted_image = subtracted_image / np.max(subtracted_image)
+
+        plt.imshow(subtracted_image)
+        plt.show()
+
+    return total_subtracted_image
+
+
+def offset_determination():
+    total_subtracted_image = sky_subtraction(show_brightness_plot=False, median_subtraction=True, inspection_subtraction=False, show_single_image=False,
+image_index=1)
+
+    combined_image = np.mean(total_subtracted_image, axis=2)
+    plt.imshow(combined_image)
+    plt.show()
     return
 
-
 # image format is e.g image01, image25
-image_path = r"Task sheet files-20221008\IRcombination\Near_IR_images\image05.fits"
+image_path = r"Task sheet files-20221008\IRcombination\Near_IR_images\image24.fits"
 
 #test_astropy()
-#display_image()
-bad_pixel_interpolation(image_path=image_path, remove_cosmis_rays=True, save_image=False, show_image=True)
+#display_image(image_path=image_path)
+#bad_pixel_interpolation(image_path=image_path, remove_cosmis_rays=True,threshold=9000, save_image=True, show_image=True)
 
-#sky_subtraction(show_plot=True)
+#sky_subtraction(show_brightness_plot=False, median_subtraction=True, inspection_subtraction=False, show_single_image=True,
+#image_index=24)
 
+offset_determination()
 
 
