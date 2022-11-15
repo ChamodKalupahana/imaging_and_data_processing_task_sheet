@@ -27,13 +27,10 @@ def load_grey_image(image):
     if image == 'ghost':
         orginal_image = plt.imread(r'Images\Orginal image - ghost.jpeg')
 
-    if image == 'ocean':
-        orginal_image = plt.imread(r'Images\Orginal image - ocean.jpeg')
-
     if image == 'lake':
         orginal_image = plt.imread(r'Images\Orginal image - lakejpeg.jpeg')
 
-    if image == 'orginal':
+    if image == 'original':
         orginal_image = plt.imread(r'Images\Orginal image.jpeg')
     r, g, b = orginal_image[:,:,0], orginal_image[:,:,1], orginal_image[:,:,2]
 
