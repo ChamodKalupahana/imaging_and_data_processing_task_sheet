@@ -2,10 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def load_grey_image(image):
-    """ read the string input and assigns the image and then divide into rgb values
+    """ possible inputs: gym, goosefair, goosefair bright, goosefair day, ghost, lake, original
+    read the string input and assigns the image and then divide into rgb values
 
     Args:
-        image (_type_): _description_
+        image (str): gym
 
     Returns:
         orginal_image
@@ -28,7 +29,7 @@ def load_grey_image(image):
         orginal_image = plt.imread(r'Images\Orginal image - ghost.jpeg')
 
     if image == 'lake':
-        orginal_image = plt.imread(r'Images\Orginal image - lakejpeg.jpeg')
+        orginal_image = plt.imread(r'Images\Orginal image - lake.jpeg')
 
     if image == 'original':
         orginal_image = plt.imread(r'Images\Orginal image.jpeg')

@@ -55,8 +55,8 @@ def plot_org_vs_grey_image(plot_histrogram, image, alpha):
         # for producing report figure
         ax_2[0].set_xlabel('Brightness of pixels')
         ax_2[1].set_xlabel('Brightness of pixels')
-        ax_2[0].set_ylabel('Brightness of pixels')
-        ax_2[1].set_ylabel('Brightness of pixels')
+        ax_2[0].set_ylabel('Pixel percentage')
+        ax_2[1].set_ylabel('Pixel percentage')
         ax_2[0].set_title('(a)')
         ax_2[1].set_title('(b)')
 
