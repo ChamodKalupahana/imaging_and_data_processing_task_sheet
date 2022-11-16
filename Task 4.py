@@ -217,6 +217,7 @@ def sky_subtraction(show_brightness_plot, median_subtraction, inspection_subtrac
 
 
 def offset_determination():
+    # make a 5x5 subplot
     total_subtracted_image = sky_subtraction(show_brightness_plot=False, median_subtraction=True, inspection_subtraction=False, show_single_image=False,
 image_index=1)
 
