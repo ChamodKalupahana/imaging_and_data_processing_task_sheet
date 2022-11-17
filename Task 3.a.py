@@ -115,11 +115,11 @@ def hilbert_signal(signal):
 
     # filter through 580 frequencies
     for i in range(0, num_of_freq):
-        temp_signal = freq_filter(signal=signal, guassian_filter_centre=freq[i], guassian_filter_sigma=0.1, show_plot=False)
+        temp_signal = freq_filter(signal=signal, guassian_filter_centre=freq[i], guassian_filter_sigma=0.2, show_plot=False)
         total_signal[i] = temp_signal
     
     plt.imshow(total_signal, aspect='auto')
-    plt.xticks(ticks = [np.linspace(0, 40, num_of_data_points)])
+    #plt.xticks(ticks = [np.linspace(0, 40, num_of_data_points)])
     plt.show()
 
     return
