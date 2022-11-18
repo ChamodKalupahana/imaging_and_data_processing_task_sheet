@@ -46,6 +46,8 @@ def plot_org_vs_grey_image(plot_histrogram, image, alpha):
         # plotting infomation
         ax_2[0].ticklabel_format(style='plain')
         ax_2[1].ticklabel_format(style='plain')
+        ax_2[0].set_ylim([0, 0.025])
+        ax_2[1].set_ylim([0, 0.025])
         
         # for producing plt figure
         #ax_2[0].set_xlabel('Original image')

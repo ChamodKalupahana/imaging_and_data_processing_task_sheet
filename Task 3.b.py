@@ -36,7 +36,6 @@ def time_freq_decom(signal_brain_num):
     #fft_signal_1 = np.abs(np.fft.ifft(fft_signal_1))
 
     # plot the fourier transform against 600Hz
-    
 
     sample_rate = 600 # in Hz
     sample_interval = 1 / sample_rate
@@ -46,10 +45,11 @@ def time_freq_decom(signal_brain_num):
     
     ax[0].set_xlabel('Time (s)')
     ax[0].set_ylabel('Frequency (Hz)')
-    ax[0].set_title('Unprocessed Signal '+ str(signal_brain_num))
+    #ax[0].set_title('Unprocessed Signal '+ str(signal_brain_num))
     ax[1].set_xlabel('Frequency (Hz)')
     ax[1].set_ylabel('Power strectrum')
-    ax[1].set_title('Fourier Transformed Signal')
+    #ax[1].set_title('Fourier Transformed Signal')
+    fig.subplots_adjust(hspace=0.4)
     plt.savefig('Task 3 Images/signal_figure.jpeg')
     plt.show()
 
@@ -87,6 +87,7 @@ def find_baseline(signal_brain_num, last_0_5_secs):
 
     # plot the signal against 6.5s of time 
     t = np.linspace(0, 6.5 ,np.size(signal_brain))
+    
     if last_0_5_secs == True:
         t = np.linspace(0, 0.5 ,np.size(signal_brain))
     
@@ -141,5 +142,5 @@ def find_baseline(signal_brain_num, last_0_5_secs):
     fig.subplots_adjust(hspace=0.6)
     plt.show()
 
-#time_freq_decom(signal_brain_num=1)
-find_baseline(signal_brain_num=1, last_0_5_secs=True)
+time_freq_decom(signal_brain_num=1)
+#find_baseline(signal_brain_num=1, last_0_5_secs=False)

@@ -33,7 +33,7 @@ def display_image(image_path):
     image = fits.getdata(image_path)
     
     # plt.imshow() uses the astropy_mpl_style to show the image
-    plt.title('Unprocessed IR Image')
+    #plt.title('Unprocessed IR Image')
     plt.xticks([])
     plt.yticks([])
 
@@ -147,7 +147,7 @@ def bad_pixel_interpolation(image_path, remove_cosmis_rays, threshold, save_imag
     
     if show_image == True:
         plt.imshow(image)
-        plt.title('Interpolated IR Image')
+        #plt.title('Interpolated IR Image')
         plt.xticks([])
         plt.yticks([])
         plt.show()
@@ -199,6 +199,8 @@ def sky_subtraction(show_brightness_plot, median_subtraction, inspection_subtrac
         if median_subtraction == True:
             plt.plot(np.arange(1, N + 1), total_image_median, 'b-')
             plt.savefig(r"Task 4 Images/background sky brightness.jpeg")
+            plt.xlabel('Image number')
+            plt.ylabel('Average Pixel Brightness')
             #plt.xticks(np.arange(1, N + 1, 1))
         plt.show()
     
@@ -211,6 +213,8 @@ def sky_subtraction(show_brightness_plot, median_subtraction, inspection_subtrac
         subtracted_image = subtracted_image / np.max(subtracted_image)
 
         plt.imshow(subtracted_image)
+        plt.xticks([])
+        plt.yticks([])
         plt.show()
 
     return total_subtracted_image
@@ -219,7 +223,7 @@ def sky_subtraction(show_brightness_plot, median_subtraction, inspection_subtrac
 def offset_determination():
     # make a 5x5 subplot
     total_subtracted_image = sky_subtraction(show_brightness_plot=False, median_subtraction=True, inspection_subtraction=False, show_single_image=False,
-image_index=1)
+    image_index=1)
 
     combined_image = np.mean(total_subtracted_image, axis=2)
     plt.imshow(combined_image)
@@ -227,15 +231,15 @@ image_index=1)
     return
 
 # image format is e.g image01, image25
-image_path = r"Task sheet files-20221008\IRcombination\Near_IR_images\image24.fits"
+image_path = r"Task sheet files-20221008\IRcombination\Near_IR_images\image01.fits"
 
 #test_astropy()
 #display_image(image_path=image_path)
 #bad_pixel_interpolation(image_path=image_path, remove_cosmis_rays=True,threshold=9000, save_image=True, show_image=True)
 
-#sky_subtraction(show_brightness_plot=False, median_subtraction=True, inspection_subtraction=False, show_single_image=True,
-#image_index=24)
+sky_subtraction(show_brightness_plot=False, median_subtraction=True, inspection_subtraction=False, show_single_image=True,
+image_index=24)
 
-offset_determination()
+#offset_determination()
 
 

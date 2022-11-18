@@ -78,23 +78,26 @@ def freq_filter(signal ,guassian_filter_centre, guassian_filter_sigma, show_plot
 
         # plotting infomation
         ax[0, 0].set_xlabel('Time')
-        ax[0, 0].set_ylabel('Signal')
-        ax[0, 0].set_title('Unprocessed Signal')
+        ax[0, 0].set_ylabel('Amplitude')
+        #ax[0, 0].set_title('Unprocessed Signal')
         ax[0, 1].set_xlabel('Frequency')
         ax[0, 1].set_ylabel('Power strectrum')
-        ax[0, 1].set_title('Fourier Transform')
+        #ax[0, 1].set_title('Fourier Transform')
         ax[1, 0].set_xlabel('Frequency')
         ax[1, 0].set_ylabel('Power strectrum')
-        ax[1, 0].set_title('Guassian Filter')
+        #ax[1, 0].set_title('Guassian Filter')
         ax[1, 1].set_xlabel('Frequency')
         ax[1, 1].set_ylabel('Power strectrum')
-        ax[1, 1].set_title('Filtered Signal')
+        #ax[1, 1].set_title('Filtered Signal')
         ax[2, 0].set_xlabel('Time')
         ax[2, 0].set_ylabel('Signal')
-        ax[2, 0].set_title('Inverse Filtered Signal')
-        ax[2, 1].set_title('Analytic Signal')
+        ax[2, 1].set_xlabel('Time')
+        ax[2, 1].set_ylabel('Signal')
+        #ax[2, 0].set_title('Inverse Filtered Signal')
+        #ax[2, 1].set_title('Analytic Signal')
         #ax[1, 0].set_xlim([mu_1 - sig, mu_1 + sig])
-        #ax[1, 0].set_xlim([4 , 8])
+        ax[1, 0].set_xlim([3 , 7])
+        ax[1, 1].set_xlim([3 , 7])
         fig.subplots_adjust(hspace=0.6)
         plt.savefig(r"Task 3 Images\filtered_signal.jpeg")
         plt.show()
@@ -106,7 +109,7 @@ def freq_filter(signal ,guassian_filter_centre, guassian_filter_sigma, show_plot
 def hilbert_signal(signal):
 
     #num_of_freq = int(580 / 2)
-    num_of_freq = int(580)
+    num_of_freq = int(100)
     max_freq = int(100)
     num_of_data_points = 48000
 
@@ -196,7 +199,7 @@ def example_code():
 signal = np.loadtxt(r"Task sheet files-20221008\Fourier_Filtering\Fourier_Filtering\signal.mat")
 
 #freq_filter()
-#freq_filter(guassian_filter_centre=5, show_plot=True)
+#freq_filter(signal, guassian_filter_centre=5,guassian_filter_sigma=0.2, show_plot=True)
 #test_fft()
 #example_code()
 #freq_filter_10_sec()

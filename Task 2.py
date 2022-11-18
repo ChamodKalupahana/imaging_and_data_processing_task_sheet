@@ -176,7 +176,7 @@ def show_old_animation(affine_data,show_room, small_room, start_frame):
     centre_of_mass = np.array([np.average(head_x), np.average(head_y), np.average(head_z)])
 
     
-    for i in range(start_frame ,N):
+    for i in range(start_frame ,N, 100):
         new_head_x, new_head_y, new_head_z = head_x, head_y, head_z
 
         new_head_x, new_head_y, new_head_z = rotation_matrix(theta, phi, alpha ,new_head_x, new_head_y, new_head_z, centre_of_mass, i)

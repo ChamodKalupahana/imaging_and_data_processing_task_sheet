@@ -41,7 +41,8 @@ def load_grey_image(image):
     # https://stackoverflow.com/questions/12201577/how-can-i-convert-an-rgb-image-into-grayscale-in-python
     #greyscale_image = np.sqrt(r**2 + g**2 + b**2)
 
-    greyscale_image = 0.2989 * r + 0.5870 * g + 0.1140 * b
+    #greyscale_image = 0.2989 * r + 0.5870 * g + 0.1140 * b
+    greyscale_image = 0.33 * r + 0.5 * g + 0.166 * b
     greyscale_image = (greyscale_image / np.amax(greyscale_image)).astype(np.float64)
 
     return orginal_image, greyscale_image
