@@ -37,7 +37,8 @@ def display_image(image_path):
     plt.xticks([])
     plt.yticks([])
 
-    plt.imshow(image)
+    plt_image = plt.imshow(image)
+    plt.colorbar(plt_image)
     plt.savefig(r"Task 4 Images/basic_image.jpeg")
     plt.show()
 
@@ -146,10 +147,11 @@ def bad_pixel_interpolation(image_path, remove_cosmis_rays, threshold, save_imag
     print(image_path[-12:-1],  'done')
     
     if show_image == True:
-        plt.imshow(image)
+        plt_image = plt.imshow(image)
         #plt.title('Interpolated IR Image')
         plt.xticks([])
         plt.yticks([])
+        plt.colorbar(plt_image)
         plt.show()
         if save_image == True:
             plt.savefig(r"Task 4 Images/bad_pixel_image.jpeg")
@@ -212,9 +214,10 @@ def sky_subtraction(show_brightness_plot, median_subtraction, inspection_subtrac
         subtracted_image = np.abs(image - total_image_median[image_index])
         subtracted_image = subtracted_image / np.max(subtracted_image)
 
-        plt.imshow(subtracted_image)
+        plt_image = plt.imshow(subtracted_image)
         plt.xticks([])
         plt.yticks([])
+        plt.colorbar(plt_image)
         plt.show()
 
     return total_subtracted_image
@@ -231,14 +234,14 @@ def offset_determination():
     return
 
 # image format is e.g image01, image25
-image_path = r"Task sheet files-20221008\IRcombination\Near_IR_images\image01.fits"
+image_path = r"Task sheet files-20221008\IRcombination\Near_IR_images\image25.fits"
 
 #test_astropy()
-#display_image(image_path=image_path)
+display_image(image_path=image_path)
 #bad_pixel_interpolation(image_path=image_path, remove_cosmis_rays=True,threshold=9000, save_image=True, show_image=True)
 
-sky_subtraction(show_brightness_plot=False, median_subtraction=True, inspection_subtraction=False, show_single_image=True,
-image_index=24)
+#sky_subtraction(show_brightness_plot=False, median_subtraction=True, inspection_subtraction=False, show_single_image=True,
+#image_index=1)
 
 #offset_determination()
 

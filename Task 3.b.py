@@ -40,7 +40,7 @@ def time_freq_decom(signal_brain_num):
     sample_rate = 600 # in Hz
     sample_interval = 1 / sample_rate
     freq = np.fft.fftfreq(np.size(fft_signal_1), sample_interval)
-    
+        
     ax[1].plot(freq, fft_signal_1, 'r-')
     
     ax[0].set_xlabel('Time (s)')
